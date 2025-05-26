@@ -5,7 +5,8 @@ from linebot.models import (
     MessageEvent,
     TextMessage,
     StickerMessage,
-    TextSendMessage
+    TextSendMessage,
+    ImageSendMessage
 )
 import os
 import random
@@ -31,8 +32,29 @@ def callback():
 def handle_message(event):
     user_message = event.message.text.lower()
 
-    weather_keywords = ["天気", "晴れ", "雨", "くもり", "雪", "天候", "降水", "雷"]
+    # LINE公式のキーワード応答ワード一覧（Bot側では無視）
+    excluded_keywords = [
+        "おはよう", "こんにちは", "こんばんは", "はじめまして", "よろしく", "hello",
+        "お早う", "こんちは", "よろ", "どうも"
+    ]
 
+    # ダニエル専用対応
+    if "ダニエル" in user_message:
+        image_url = "https://publicdomainq.net/images/201811/30s/publicdomainq-0028892nxr.jpg"
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(text="Hi, I am Daniel. Nice to meet you."),
+                ImageSendMessage(original_content_url=image_url, preview_image_url=image_url)
+            ]
+        )
+        return
+
+    if any(keyword in user_message for keyword in excluded_keywords):
+        return  # 公式の応答に任せて、Botはスルー
+
+    # 天気関連
+    weather_keywords = ["天気", "晴れ", "雨", "くもり", "雪", "天候", "降水", "雷"]
     if any(keyword in user_message for keyword in weather_keywords):
         reply = "昔は靴を飛ばして、明日の天気を予想したものです。"
     else:
@@ -75,12 +97,12 @@ def handle_message(event):
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker(event):
     replies = [
-        "そのスタンプ、すき！",
-        "え、かわいいやん。",
+        "そのスタンプ、まだまだだな。",
+        "スタンプ使いの私に太刀打ちできると思おうのか？",
         "スタンプだけで気持ち伝わるってすごくない？",
-        "……無言の圧を感じた。笑",
-        "それ、スタンプ？呪文じゃないよね？笑",
-        "おっ、ええやん。スタンプ職人やね"
+        "スタンプポンポン",
+        "スタンプか、、、",
+        "お前はスタンプの全てを知らない"
     ]
     reply = random.choice(replies)
     line_bot_api.reply_message(
