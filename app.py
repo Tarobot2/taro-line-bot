@@ -31,16 +31,12 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_message = event.message.text.lower()
-    print(f"[DEBUG] user_message: {user_message}")  # ← 追加
+    print(f"[DEBUG] user_message: {user_message}")
 
     image_url = "https://i.imgur.com/3jFhuCo.jpg"
 
-    greeting_keywords = [
-        "おはよう", "こんにちは", "こんばんは", "はじめまして", "よろしく", "hello"
-    ]
-
+    greeting_keywords = ["おはよう", "こんにちは", "こんばんは", "はじめまして", "よろしく", "hello"]
     if any(keyword in user_message for keyword in greeting_keywords):
-        print("[DEBUG] Greeting matched ✅")
         line_bot_api.reply_message(
             event.reply_token,
             [
@@ -51,35 +47,71 @@ def handle_message(event):
         )
         return
 
-    # ✅ 天気キーワード一覧
-    weather_keywords = [
-        "天気", "天候", "気象", "空模様", "予報", "気象庁",
-        "晴れ", "快晴", "晴天", "晴れる", "日差し", "太陽", "ピーカン", "陽気",
-        "くもり", "曇り", "曇る", "曇天",
-        "雨", "小雨", "大雨", "ゲリラ豪雨", "土砂降り", "雨降り", "降水", "梅雨", "雨模様", "にわか雨",
-        "雷", "雷雨", "落雷", "かみなり",
-        "雪", "大雪", "小雪", "吹雪", "雪降り", "寒波",
-        "風", "強風", "突風", "台風", "暴風", "爆風", "竜巻",
-        "暑い", "寒い", "蒸し暑い", "冷える", "気温", "湿度", "乾燥",
-        "ざーざー", "ぽつぽつ", "じめじめ", "ゴロゴロ",
-        "sunny", "fine", "clear sky", "cloudy", "overcast", "rain", "drizzle",
-        "shower", "pouring", "wet", "storm", "thunder", "lightning", "snow",
-        "snowfall", "blizzard", "icy", "gust", "wind", "stormy", "typhoon",
-        "low pressure", "high pressure", "hot", "cold", "humid", "chill",
-        "temperature", "dry", "heatwave", "weather", "forecast", "sky", "rainbow",
-        "fog", "mist", "haze"
+    weather_keywords = ["天気", "雨", "晴れ", "曇り", "雷", "雪", "気温", "風", "台風"]
+    if any(keyword in user_message for keyword in weather_keywords):
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="昔は靴を飛ばして、明日の天気を予想したものです。")
+        )
+        return
+
+    # 話題分類キーワード
+    fitness_keywords = ["筋肉", "運動", "トレーニング", "プロテイン", "ジム", "鍛える"]
+    love_keywords = ["恋", "好き", "告白", "振られた", "LINEこない", "彼女", "彼氏","恋愛","愛","浮気","男友達","女友達"]
+    otaku_keywords = ["アニメ", "ゲーム", "推し", "イベント", "オタク","推し活","アイドル","オープニング","エンディング"]
+    philosophy_keywords = ["人生", "意味", "虚無", "死にたい", "考えすぎ","哲学","深い"]
+    nonsense_keywords = ["あああ", "ｷﾞｬｰ", "うおおお", "！！", "意味不明", "叫び","クァwせdrftgyﾌｼﾞｺlp","ttっ",]
+
+    # 話題別返答リスト
+    fitness_replies = [
+        "筋肉モリモリマッチョマンのへ〜んたいだ。",
+        "なかやまきんに君は私の先輩です。",
+        "鬼の背中＆背中のクリスマスツリー。世界観どうなっとるん？",
+        "人間は裏切る。筋肉は裏切らない。つまり、裏切り者をジムに連れていけば改心するはずです。",
+        "ダンベル落としたら床が泣いた。"
     ]
 
-    matched = [kw for kw in weather_keywords if kw in user_message]
-    print(f"[DEBUG] matched weather keywords: {matched}")  # ← 追加！
+    love_replies = [
+        "おい、やめろ。リア充",
+        "イオンでイチャイチャするようなカップルにはなりたくない。",
+        "恋愛相談は別料金です。10分15000円から",
+        "それは間違いです。",
+        "君が好きです。付き合ってほしいな"
+    ]
 
-    if matched:
-        reply = "昔は靴を飛ばして、明日の天気を予想したものです。"
-    else:
-        replies = [
-            "バイトは楽なのが一番",
-            "トレンドは同窓会マジックより消しゴムマジックですね",
-            "好きな映画は「あなたが好きな映画」です。",
+    otaku_replies = [
+        "推しは死なないやつを選べ。",
+        "アキバに行こう！。",
+        "真のオタクはオタクみたいな格好してる",
+        "エヴァになりたい",
+        "オープニングでジャンプするアニメは神アニメ。"
+    ]
+
+    philosophy_replies = [
+        "感情を感じよう。",
+        "魂をアップロードしよう！。",
+        "哲学、それはすべての基礎！！",
+        "脳にアプデきました！よ！！！。",
+        "お前は敵の敵だ！！"
+    ]
+
+    nonsense_replies = [
+        "ｳﾜｰｰｰｯ‼︎（音割れ）",
+        "チャレンジでやったところだ！。",
+        "広辞苑に載せたい言葉、第13位！",
+        "読める、読めるぞ！！",
+        "こ、これは……古代バビロニア語！？"
+    ]
+
+    default_replies = [
+        "ふーん……？",
+        "この情報を冷蔵庫に貼っときます。",
+        "脳の回転を早めることで、さらにバカになる",
+        "豆腐の角で頭打ってみて",
+        "可愛いだけじゃダメに決まっとるやろ！！。",
+        "バイトは楽なのが一番",
+        "トレンドは同窓会マジックより消しゴムマジックですね",
+        "好きな映画は「あなたが好きな映画」です。",
             "私はbotです。感情はありません。",
             "はっ倒すぞ！！！コラァ",
             "一番恐ろしいのは「有能な敵」より「なぜかなんでも知ってるご近所さん」です。",
@@ -104,8 +136,21 @@ def handle_message(event):
             "大西洋は大泉洋のお父さん",
             "吉田羊と大泉洋の共通点を教えて",
             "草は生えるものです"
-        ]
-        reply = random.choice(replies)
+    ]
+
+    # 分類判定
+    if any(keyword in user_message for keyword in fitness_keywords):
+        reply = random.choice(fitness_replies)
+    elif any(keyword in user_message for keyword in love_keywords):
+        reply = random.choice(love_replies)
+    elif any(keyword in user_message for keyword in otaku_keywords):
+        reply = random.choice(otaku_replies)
+    elif any(keyword in user_message for keyword in philosophy_keywords):
+        reply = random.choice(philosophy_replies)
+    elif any(keyword in user_message for keyword in nonsense_keywords):
+        reply = random.choice(nonsense_replies)
+    else:
+        reply = random.choice(default_replies)
 
     line_bot_api.reply_message(
         event.reply_token,
