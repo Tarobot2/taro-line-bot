@@ -1,7 +1,12 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import (
+    MessageEvent,
+    TextMessage,
+    StickerMessage,
+    TextSendMessage
+)
 import os
 import random
 
@@ -23,7 +28,6 @@ def callback():
     return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)
-from linebot.models import StickerMessage
 def handle_message(event):
     user_message = event.message.text.lower()
 
@@ -63,6 +67,22 @@ def handle_message(event):
         ]
         reply = random.choice(replies)
 
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=reply)
+    )
+
+@handler.add(MessageEvent, message=StickerMessage)
+def handle_sticker(event):
+    replies = [
+        "そのスタンプ、すき！",
+        "え、かわいいやん。",
+        "スタンプだけで気持ち伝わるってすごくない？",
+        "……無言の圧を感じた。笑",
+        "それ、スタンプ？呪文じゃないよね？笑",
+        "おっ、ええやん。スタンプ職人やね"
+    ]
+    reply = random.choice(replies)
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=reply)
