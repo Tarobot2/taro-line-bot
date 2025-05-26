@@ -32,28 +32,24 @@ def callback():
 def handle_message(event):
     user_message = event.message.text.lower()
 
-    # LINE公式のキーワード応答ワード一覧（Bot側では無視）
-    excluded_keywords = [
-        "おはよう", "こんにちは", "こんばんは", "はじめまして", "よろしく", "hello",
-        "お早う", "こんちは", "よろ", "どうも"
-    ]
+    image_url = "https://publicdomainq.net/images/201811/30s/publicdomainq-0028892nxr.jpg"
 
-    # ダニエル専用対応
-    if "ダニエル" in user_message:
-        image_url = "https://publicdomainq.net/images/201811/30s/publicdomainq-0028892nxr.jpg"
+    greeting_keywords = [
+        "おはよう", "こんにちは", "こんばんは", "はじめまして", "よろしく", "hello"
+    ]
+    # ✅ あいさつ系＋Botの返答を送る
+    if any(keyword in user_message for keyword in greeting_keywords):
         line_bot_api.reply_message(
             event.reply_token,
             [
+                TextSendMessage(text="こんにちは！ダニエルもよろしくと言っています！"),
                 TextSendMessage(text="Hi, I am Daniel. Nice to meet you."),
                 ImageSendMessage(original_content_url=image_url, preview_image_url=image_url)
             ]
         )
         return
 
-    if any(keyword in user_message for keyword in excluded_keywords):
-        return  # 公式の応答に任せて、Botはスルー
-
-    # 天気関連
+    # ✅ 天気対応
     weather_keywords = ["天気", "晴れ", "雨", "くもり", "雪", "天候", "降水", "雷"]
     if any(keyword in user_message for keyword in weather_keywords):
         reply = "昔は靴を飛ばして、明日の天気を予想したものです。"
@@ -89,10 +85,10 @@ def handle_message(event):
         ]
         reply = random.choice(replies)
 
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply)
-    )
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply)
+        )
 
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker(event):
