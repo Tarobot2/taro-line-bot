@@ -31,6 +31,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_message = event.message.text.lower()
+    print(f"[DEBUG] user_message: {user_message}")  # ← 追加
 
     image_url = "https://i.imgur.com/3jFhuCo.jpg"
 
@@ -39,6 +40,7 @@ def handle_message(event):
     ]
 
     if any(keyword in user_message for keyword in greeting_keywords):
+        print("[DEBUG] Greeting matched ✅")
         line_bot_api.reply_message(
             event.reply_token,
             [
@@ -49,7 +51,7 @@ def handle_message(event):
         )
         return
 
-    # ✅ 天気キーワード一覧（修正済み）
+    # ✅ 天気キーワード一覧
     weather_keywords = [
         "天気", "天候", "気象", "空模様", "予報", "気象庁",
         "晴れ", "快晴", "晴天", "晴れる", "日差し", "太陽", "ピーカン", "陽気",
@@ -68,7 +70,10 @@ def handle_message(event):
         "fog", "mist", "haze"
     ]
 
-    if any(keyword in user_message for keyword in weather_keywords):
+    matched = [kw for kw in weather_keywords if kw in user_message]
+    print(f"[DEBUG] matched weather keywords: {matched}")  # ← 追加！
+
+    if matched:
         reply = "昔は靴を飛ばして、明日の天気を予想したものです。"
     else:
         replies = [
@@ -102,10 +107,10 @@ def handle_message(event):
         ]
         reply = random.choice(replies)
 
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=reply)
-        )
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=reply)
+    )
 
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker(event):
