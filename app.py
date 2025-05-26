@@ -23,6 +23,7 @@ def callback():
     return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)
+from linebot.models import StickerMessage
 def handle_message(event):
     user_message = event.message.text.lower()
 
