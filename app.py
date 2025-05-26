@@ -32,7 +32,7 @@ def callback():
 def handle_message(event):
     user_message = event.message.text.lower()
 
-    image_url = "https://publicdomainq.net/images/201811/30s/publicdomainq-0028892nxr.jpg"
+    image_url = "https://i.imgur.com/3jFhuCo.jpg"  # ← 差し替えた画像URL
 
     greeting_keywords = [
         "おはよう", "こんにちは", "こんばんは", "はじめまして", "よろしく", "hello"
