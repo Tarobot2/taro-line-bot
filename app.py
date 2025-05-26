@@ -50,7 +50,22 @@ def handle_message(event):
         return
 
     # ✅ 天気対応
-    weather_keywords = ["天気", "晴れ", "雨", "くもり", "雪", "天候", "降水", "雷"]
+    weather_keywords = [weather_keywords = [
+    "天気", "天候", "気象", "空模様", "予報", "気象庁",
+    "晴れ", "快晴", "晴天", "晴れる", "日差し", "太陽", "ピーカン", "陽気",
+    "くもり", "曇り", "曇る", "曇天",
+    "雨", "小雨", "大雨", "ゲリラ豪雨", "土砂降り", "雨降り", "降水", "梅雨", "雨模様", "にわか雨",
+    "雷", "雷雨", "落雷", "かみなり",
+    "雪", "大雪", "小雪", "吹雪", "雪降り", "寒波",
+    "風", "強風", "突風", "台風", "暴風", "爆風", "竜巻",
+    "暑い", "寒い", "蒸し暑い", "冷える", "気温", "湿度", "乾燥",
+    "ざーざー", "ぽつぽつ", "じめじめ", "ゴロゴロ",
+    "sunny", "fine", "clear sky", "cloudy", "overcast", "rain", "drizzle",
+    "shower", "pouring", "wet", "storm", "thunder", "lightning", "snow",
+    "snowfall", "blizzard", "icy", "gust", "wind", "stormy", "typhoon",
+    "low pressure", "high pressure", "hot", "cold", "humid", "chill",
+    "temperature", "dry", "heatwave", "weather", "forecast", "sky", "rainbow",
+    "fog", "mist", "haze"]
     if any(keyword in user_message for keyword in weather_keywords):
         reply = "昔は靴を飛ばして、明日の天気を予想したものです。"
     else:
@@ -70,7 +85,7 @@ def handle_message(event):
             "筋肉は裏切らない",
             "えっちなことを今考えないでください！",
             "返事がめんどくさいです",
-            "「大きな栗の木の下」って大きい栗がある木の下なのか、木がデカいのか？保育園の時からの謎です。",
+            "「大きな栗の木の下で」って大きい栗が実っている木の下なのか、デカい木の下なのか？保育園児の時からの謎です。",
             "人間には２種類います。ローランドか、ローランドじゃないかです。",
             "I'll be back",
             "ホメロス叙事詩って褒め上手そう",
